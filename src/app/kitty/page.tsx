@@ -35,7 +35,7 @@ export default async function KittyPage() {
           <p className="text-gray-500 mt-1">Pool of all collected payments and expenses</p>
         </div>
         <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-gray-100 flex items-center gap-3">
-          <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Pool:</span>
+          <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Balance:</span>
           <span className={`text-2xl font-bold ${totalBalance > 0 ? "text-green-600" : totalBalance < 0 ? "text-red-600" : "text-gray-900"}`}>
             {totalBalance > 0 ? "+" : totalBalance < 0 ? "-" : ""}£{Math.abs(totalBalance).toFixed(2)}
           </span>
