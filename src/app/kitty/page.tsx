@@ -31,7 +31,7 @@ export default async function KittyPage() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Kitty Balance</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Kitty</h1>
           <p className="text-gray-500 mt-1">Pool of all collected payments and expenses</p>
         </div>
         <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-gray-100 flex items-center gap-3">
