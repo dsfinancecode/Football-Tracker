@@ -19,9 +19,10 @@ export default function AdminPage() {
 
   // State for Add Transaction form
   const [txPlayerId, setTxPlayerId] = useState("");
-  const [txAmount, setTxAmount] = useState("");
+  const [txAmount, setTxAmount] = useState("4");
   const [txDate, setTxDate] = useState(new Date().toISOString().split("T")[0]); // Default to today: YYYY-MM-DD
-  const [txType, setTxType] = useState("Game Fee");
+  const [txType, setTxType] = useState("Player Game Fee");
+  const [txDescription, setTxDescription] = useState("");
   const [txStatus, setTxStatus] = useState("");
 
   // Fetch players from Supabase when the page loads
@@ -64,13 +65,23 @@ export default function AdminPage() {
     e.preventDefault();
     setTxStatus("Adding...");
 
+    // Automatically handle positive/negative amounts based on type
+    let finalAmount = parseFloat(txAmount);
+    if (txType === "Player Game Fee" || txType === "Pitch Booking" || txType === "Kitty Expense") {
+      finalAmount = -Math.abs(finalAmount); // Save as negative deduction
+    } else {
+      finalAmount = Math.abs(finalAmount); // Save as positive payment
+    }
+
     const { error } = await supabase
       .from("transactions")
       .insert([{
-        player_id: txPlayerId,
-        amount: parseFloat(txAmount),
+        // Supabase requires null instead of an empty string if no player is selected
+        player_id: txPlayerId || null, 
+        amount: finalAmount,
         date: txDate,
-        type: txType
+        type: txType,
+        description: txDescription
       }]);
 
     if (error) {
@@ -78,7 +89,12 @@ export default function AdminPage() {
       console.error(error);
     } else {
       setTxStatus("Transaction saved successfully!");
-      setTxAmount(""); // Reset amount, but keep date and type for quick batch entry!
+      
+      if (txType === "Player Game Fee") setTxAmount("4");
+      else if (txType.startsWith("Player Payment")) setTxAmount("4");
+      else setTxAmount(""); // Reset amount for expenses, but keep date and type!
+      setTxDescription("");
+      
       setTimeout(() => setTxStatus(""), 3000);
     }
   };
@@ -113,29 +129,44 @@ export default function AdminPage() {
         <form onSubmit={handleAddTransaction} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Player</label>
-              <select required value={txPlayerId} onChange={(e) => setTxPlayerId(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                <option value="" disabled>Select a player</option>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+              <select required value={txType} onChange={(e) => {
+                const newType = e.target.value;
+                setTxType(newType);
+                if (newType === "Kitty Expense" || newType === "Pitch Booking") setTxPlayerId("");
+                if (newType === "Player Game Fee") setTxAmount("4");
+                else if (newType.startsWith("Player Payment")) setTxAmount("4");
+                else setTxAmount("");
+              }} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                <option value="Player Game Fee">Player Game Fee</option>
+                <option value="Player Payment (Bank)">Player Payment (Bank)</option>
+                <option value="Player Payment (Cash)">Player Payment (Cash)</option>
+                <option value="Kitty Expense">Kitty Expense</option>
+                <option value="Pitch Booking">Pitch Booking</option>
+              </select>
+            </div>
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${txType === "Kitty Expense" || txType === "Pitch Booking" ? "text-gray-400" : "text-gray-700"}`}>
+                Player
+              </label>
+              <select disabled={txType === "Kitty Expense" || txType === "Pitch Booking"} required={!(txType === "Kitty Expense" || txType === "Pitch Booking")} value={txPlayerId} onChange={(e) => setTxPlayerId(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors">
+                <option value="" disabled={!(txType === "Kitty Expense" || txType === "Pitch Booking")}>Select a player...</option>
                 {players.map((player) => (<option key={player.id} value={player.id}>{player.name}</option>))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-              <select required value={txType} onChange={(e) => setTxType(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                <option value="Game Fee">Game Fee (Charge)</option>
-                <option value="Bank Payment">Bank Payment (Paid)</option>
-                <option value="Cash Payment">Cash Payment (Paid)</option>
-              </select>
-            </div>
-            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-              <input type="number" step="0.01" required value={txAmount} onChange={(e) => setTxAmount(e.target.value)} placeholder="e.g., -5.00 or 10.00" className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              <p className="text-xs text-gray-500 mt-1">Use negative (-) for fees owed, positive for money paid.</p>
+              <input type="number" step="0.01" required value={txAmount} onChange={(e) => setTxAmount(e.target.value)} placeholder="e.g., 5.00 or 10.00" className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <p className="text-xs text-gray-500 mt-1">Fees and expenses are automatically saved as deductions.</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
               <input type="date" required value={txDate} onChange={(e) => setTxDate(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <input type="text" value={txDescription} onChange={(e) => setTxDescription(e.target.value)} placeholder="e.g., Weekly match fee, Transfer from John" className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div className="pt-2 flex items-center justify-between">
             <p className="text-sm text-green-600 font-medium">{txStatus}</p>
