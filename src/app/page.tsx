@@ -35,10 +35,29 @@ export default async function Home() {
     };
   }) || [];
 
+  // Sort players: Negatives first, then Positives, then Zeros
+  players.sort((a, b) => {
+    const groupA = a.balance < 0 ? 1 : a.balance > 0 ? 2 : 3;
+    const groupB = b.balance < 0 ? 1 : b.balance > 0 ? 2 : 3;
+
+    // 1. Sort by group
+    if (groupA !== groupB) return groupA - groupB;
+
+    // 2. Within negatives, lowest number (-10) comes before (-4)
+    if (groupA === 1) return a.balance - b.balance;
+    // 3. Within positives, highest credit (10) comes before (4)
+    if (groupA === 2) return b.balance - a.balance;
+    // 4. For zero balances, sort alphabetically by name
+    return a.name.localeCompare(b.name);
+  });
+
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-        <h1 className="text-3xl font-bold text-gray-900 pt-1">Player Balances</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 pt-1">Player Balances</h1>
+          <p className="text-gray-500 mt-1">Click player name to view transaction history</p>
+        </div>
         <div className="bg-white px-5 py-4 rounded-xl shadow-sm border border-gray-100 flex flex-col min-w-[260px]">
           <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Payment Details</span>
           <div className="text-sm text-gray-600 flex flex-col gap-2">

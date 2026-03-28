@@ -5,6 +5,17 @@ import { notFound } from "next/navigation";
 // Force Next.js to fetch fresh data every time the page loads
 export const dynamic = "force-dynamic";
 
+const getTypeColor = (type: string | null) => {
+  switch (type) {
+    case "Game Fee": return "bg-blue-100 text-blue-800 border-blue-200";
+    case "Bank Payment": return "bg-emerald-100 text-emerald-800 border-emerald-200";
+    case "Cash Payment": return "bg-teal-100 text-teal-800 border-teal-200";
+    case "Kitty Expense": return "bg-red-100 text-red-800 border-red-200";
+    case "Pitch Booking": return "bg-purple-100 text-purple-800 border-purple-200";
+    default: return "bg-gray-100 text-gray-800 border-gray-200";
+  }
+};
+
 export default async function PlayerDetailPage({
   params,
   searchParams,
@@ -94,7 +105,7 @@ export default async function PlayerDetailPage({
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col items-start gap-1">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getTypeColor(tx.type)}`}>
                           {tx.type || "Transaction"}
                         </span>
                         {tx.description && (
