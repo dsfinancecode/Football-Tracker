@@ -92,7 +92,7 @@ export default function AdminPage() {
       setTxStatus("Transaction saved successfully!");
       
       if (txType === "Game Fee") setTxAmount("4");
-      else if (txType.startsWith("Payment")) setTxAmount("4");
+      else if (txType.endsWith("Payment")) setTxAmount("4");
       else setTxAmount(""); // Reset amount for expenses, but keep date and type!
       setTxDescription("");
       
@@ -141,12 +141,12 @@ export default function AdminPage() {
                 setTxType(newType);
                 if (newType === "Kitty Expense" || newType === "Pitch Booking") setTxPlayerId("");
                 if (newType === "Game Fee") setTxAmount("4");
-                else if (newType.startsWith("Payment")) setTxAmount("4");
+                else if (newType.endsWith("Payment")) setTxAmount("4");
                 else setTxAmount("");
               }} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
                 <option value="Game Fee">Game Fee</option>
-                <option value="Payment (Bank)">Payment (Bank)</option>
-                <option value="Payment (Cash)">Payment (Cash)</option>
+                <option value="Bank Payment">Bank Payment</option>
+                <option value="Cash Payment">Cash Payment</option>
                 <option value="Kitty Expense">Kitty Expense</option>
                 <option value="Pitch Booking">Pitch Booking</option>
               </select>
