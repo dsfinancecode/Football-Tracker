@@ -1,0 +1,38 @@
+# Football Tracker - AI System Instructions
+
+## Project Overview
+- **Purpose:** An app to track weekly football players and record financial transactions (who paid, who owes money) for each participant.
+- **Tech Stack:** Next.js (App Router), TypeScript, React, Supabase (Database/Auth), Vercel (Hosting).
+
+## Architecture & Standards
+- **Directory Structure:** Using the `src/` directory. All Next.js pages go inside `src/app/`.
+- **Database:** Supabase. The initialized client is located at `src/lib/supabase.ts`.
+- **TypeScript:** Configured with modern Next.js settings (`"moduleResolution": "bundler"`). Avoid generating TS files that rely on deprecated `node10` resolution.
+
+## Security
+- **No Hardcoded Secrets:** NEVER hardcode Supabase URLs, Anon Keys, or Database Passwords in code or workspace files.
+- **Environment Variables:** Always use `process.env.NEXT_PUBLIC_SUPABASE_URL` and `process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY`. Locally, these are in `.env.local`. In production, they are configured in Vercel.
+
+## Development Environment Quirks (IMPORTANT)
+- **Google Drive Git Locks:** This project is hosted inside a Google Drive synced folder. Google Drive frequently locks `.git` files, causing `Deletion of directory '.git/objects/...' failed` errors. 
+  - *Solution:* Pause Google Drive syncing before performing Git commits/pushes, or rely solely on GitHub for version control backup.
+- **Large Files / `node_modules`:** `node_modules` and Next.js build outputs (`.next`) must ALWAYS remain in `.gitignore`. Pushing these to GitHub will cause repository rejection due to file size limits.
+
+## Design & UI/UX Guidelines
+- **Aesthetics:** Clean, minimalist layouts with generous white space, a consistent, high-quality color palette, and high-quality visuals.
+- **Typography:** Thoughtful typography for hierarchy and readability.
+- **Components & Styling:** Consistent UI components with depth (shadows, rounded corners).
+- **Interactions:** Smooth micro-interactions, subtle animations, and intuitive feedback.
+- **Experience:** Fully responsive design that ensures an excellent layout and user experience on both mobile and desktop views. Fast performance and optimized loading are essential.
+
+## Database Schema Reference
+Currently planned tables (to be expanded):
+1. `players`:
+   - `id` (uuid, primary key)
+   - `name` (text)
+2. `transactions`:
+   - `id` (uuid, primary key)
+   - `player_id` (uuid, foreign key)
+   - `amount` (numeric, positive for paid, negative for owed)
+   - `date` (date)
+   - `type` (text, restricted to: 'Bank Payment', 'Cash Payment', 'Game Fee')
