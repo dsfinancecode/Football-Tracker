@@ -180,7 +180,7 @@ export default function AdminPage() {
               <button type="submit" className="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm">
                 Save Transaction
               </button>
-              <Link href="/kitty" className="px-6 py-2 bg-white border border-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center">
+              <Link href="/kitty" className="px-6 py-2 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm flex items-center justify-center">
                 Kitty
               </Link>
             </div>
