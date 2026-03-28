@@ -103,6 +103,14 @@ export default function AdminPage() {
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
 
+      {/* Header Section */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-gray-900">Admin</h1>
+        <Link href="/kitty" className="px-5 py-2 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm">
+          Kitty
+        </Link>
+      </div>
+
       {/* Add Player Section */}
       <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <h2 className="text-xl font-semibold mb-4 text-gray-800">Add New Player</h2>
@@ -180,8 +188,8 @@ export default function AdminPage() {
               <button type="submit" className="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm">
                 Save Transaction
               </button>
-              <Link href="/kitty" className="px-6 py-2 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm flex items-center justify-center">
-                Kitty
+              <Link href="/admin/transactions" className="px-6 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm flex items-center justify-center">
+                Manage
               </Link>
             </div>
           </div>

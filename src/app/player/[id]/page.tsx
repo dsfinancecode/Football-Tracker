@@ -67,6 +67,14 @@ export default async function PlayerDetailPage({
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
+      {/* Back Button */}
+      <div>
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors group">
+          <span className="transform group-hover:-translate-x-1 transition-transform duration-200">&larr;</span>
+          Back to Summary
+        </Link>
+      </div>
+
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
