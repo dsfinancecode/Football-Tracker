@@ -176,9 +176,14 @@ export default function AdminPage() {
           </div>
           <div className="pt-2 flex items-center justify-between">
             <p className="text-sm text-green-600 font-medium">{txStatus}</p>
-            <button type="submit" className="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm">
-              Save Transaction
-            </button>
+            <div className="flex gap-3">
+              <button type="submit" className="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm">
+                Save Transaction
+              </button>
+              <Link href="/kitty" className="px-6 py-2 bg-white border border-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center">
+                Kitty
+              </Link>
+            </div>
           </div>
         </form>
       </section>
