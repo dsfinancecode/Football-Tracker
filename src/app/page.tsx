@@ -59,15 +59,19 @@ export default async function Home() {
                 </tr>
               ) : (
                 players.map((player) => (
-                  <tr key={player.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">
-                      {/* Ready for Page 2! */}
-                      <Link href={`/player/${player.id}`} className="hover:text-blue-600 transition-colors">
-                        {player.name}
+                  <tr key={player.id} className="hover:bg-blue-50 transition-colors group">
+                    <td className="font-medium text-gray-900 p-0">
+                      <Link href={`/player/${player.id}`} className="px-6 py-4 flex items-center justify-between w-full h-full">
+                        <span>{player.name}</span>
+                        <span className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1 duration-200">
+                          &rarr;
+                        </span>
                       </Link>
                     </td>
-                    <td className={`px-6 py-4 text-right font-semibold ${player.balance > 0 ? "text-green-600" : player.balance < 0 ? "text-red-600" : "text-gray-500"}`}>
-                      {player.balance > 0 ? "+" : ""}{player.balance.toFixed(2)}
+                    <td className={`text-right font-semibold p-0 ${player.balance > 0 ? "text-green-600" : player.balance < 0 ? "text-red-600" : "text-gray-500"}`}>
+                      <Link href={`/player/${player.id}`} className="px-6 py-4 block w-full h-full">
+                        {player.balance > 0 ? "+" : ""}{player.balance.toFixed(2)}
+                      </Link>
                     </td>
                   </tr>
                 ))

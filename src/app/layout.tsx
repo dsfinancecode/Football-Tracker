@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50 text-gray-900 min-h-screen antialiased">
+      <body className="bg-zinc-100 text-zinc-900 min-h-screen antialiased font-sans">
         {/* Global Navigation Header */}
         <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-md">
           <div className="max-w-4xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
