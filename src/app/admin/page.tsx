@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 // Define TypeScript interfaces for our data
 interface Player {
@@ -21,7 +22,7 @@ export default function AdminPage() {
   const [txPlayerId, setTxPlayerId] = useState("");
   const [txAmount, setTxAmount] = useState("4");
   const [txDate, setTxDate] = useState(new Date().toISOString().split("T")[0]); // Default to today: YYYY-MM-DD
-  const [txType, setTxType] = useState("Player Game Fee");
+  const [txType, setTxType] = useState("Game Fee");
   const [txDescription, setTxDescription] = useState("");
   const [txStatus, setTxStatus] = useState("");
 
@@ -67,7 +68,7 @@ export default function AdminPage() {
 
     // Automatically handle positive/negative amounts based on type
     let finalAmount = parseFloat(txAmount);
-    if (txType === "Player Game Fee" || txType === "Pitch Booking" || txType === "Kitty Expense") {
+    if (txType === "Game Fee" || txType === "Pitch Booking" || txType === "Kitty Expense") {
       finalAmount = -Math.abs(finalAmount); // Save as negative deduction
     } else {
       finalAmount = Math.abs(finalAmount); // Save as positive payment
@@ -90,8 +91,8 @@ export default function AdminPage() {
     } else {
       setTxStatus("Transaction saved successfully!");
       
-      if (txType === "Player Game Fee") setTxAmount("4");
-      else if (txType.startsWith("Player Payment")) setTxAmount("4");
+      if (txType === "Game Fee") setTxAmount("4");
+      else if (txType.startsWith("Payment")) setTxAmount("4");
       else setTxAmount(""); // Reset amount for expenses, but keep date and type!
       setTxDescription("");
       
@@ -117,15 +118,20 @@ export default function AdminPage() {
             />
             {playerStatus && <p className="mt-2 text-sm text-green-600 font-medium">{playerStatus}</p>}
           </div>
-          <button type="submit" className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-            Add Player
-          </button>
+          <div className="flex gap-3 w-full sm:w-auto">
+            <button type="submit" className="flex-1 sm:flex-none px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+              Add Player
+            </button>
+            <Link href="/admin/players" className="flex-1 sm:flex-none px-6 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm flex items-center justify-center">
+              Manage
+            </Link>
+          </div>
         </form>
       </section>
 
       {/* Add Transaction Section */}
       <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Record Transaction</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">Add Transaction</h2>
         <form onSubmit={handleAddTransaction} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -134,13 +140,13 @@ export default function AdminPage() {
                 const newType = e.target.value;
                 setTxType(newType);
                 if (newType === "Kitty Expense" || newType === "Pitch Booking") setTxPlayerId("");
-                if (newType === "Player Game Fee") setTxAmount("4");
-                else if (newType.startsWith("Player Payment")) setTxAmount("4");
+                if (newType === "Game Fee") setTxAmount("4");
+                else if (newType.startsWith("Payment")) setTxAmount("4");
                 else setTxAmount("");
               }} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                <option value="Player Game Fee">Player Game Fee</option>
-                <option value="Player Payment (Bank)">Player Payment (Bank)</option>
-                <option value="Player Payment (Cash)">Player Payment (Cash)</option>
+                <option value="Game Fee">Game Fee</option>
+                <option value="Payment (Bank)">Payment (Bank)</option>
+                <option value="Payment (Cash)">Payment (Cash)</option>
                 <option value="Kitty Expense">Kitty Expense</option>
                 <option value="Pitch Booking">Pitch Booking</option>
               </select>
@@ -156,7 +162,7 @@ export default function AdminPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-              <input type="number" step="0.01" required value={txAmount} onChange={(e) => setTxAmount(e.target.value)} placeholder="e.g., 5.00 or 10.00" className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <input type="number" step="0.01" required value={txAmount} onChange={(e) => setTxAmount(e.target.value)} placeholder="e.g., 5.00 or 10.00" className={`w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold ${txType === "Game Fee" || txType === "Pitch Booking" || txType === "Kitty Expense" ? "text-red-600" : "text-green-600"}`} />
               <p className="text-xs text-gray-500 mt-1">Fees and expenses are automatically saved as deductions.</p>
             </div>
             <div>

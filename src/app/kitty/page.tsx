@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 export const dynamic = "force-dynamic";
 
 export default async function KittyPage() {
-  // Fetch all transactions excluding "Player Game Fee" and join with players to get the name
+  // Fetch all transactions excluding "Game Fee" and join with players to get the name
   const { data: transactions, error } = await supabase
     .from("transactions")
     .select(`
@@ -13,7 +13,7 @@ export default async function KittyPage() {
         name
       )
     `)
-    .neq("type", "Player Game Fee")
+    .neq("type", "Game Fee")
     .order("date", { ascending: false })
     .order("created_at", { ascending: false });
 

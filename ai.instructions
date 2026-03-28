@@ -35,4 +35,4 @@ Currently planned tables (to be expanded):
    - `player_id` (uuid, foreign key, nullable for kitty expenses/pitch bookings)
    - `amount` (numeric, positive for paid, negative for owed)
    - `date` (date)
-   - `type` (text, restricted to: 'Player Payment (Bank)', 'Player Payment (Cash)', 'Player Game Fee', 'Kitty Expense', 'Pitch Booking')
+   - `type` (text, restricted to: 'Payment (Bank)', 'Payment (Cash)', 'Game Fee', 'Kitty Expense', 'Pitch Booking')

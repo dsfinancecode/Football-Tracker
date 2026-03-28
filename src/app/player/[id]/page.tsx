@@ -77,7 +77,6 @@ export default async function PlayerDetailPage({
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">Type</th>
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">Description</th>
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase tracking-wider text-right">Amount</th>
               </tr>
@@ -85,7 +84,7 @@ export default async function PlayerDetailPage({
             <tbody className="divide-y divide-gray-100">
               {paginatedTxList.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">No transactions recorded yet.</td>
+                  <td colSpan={3} className="px-6 py-8 text-center text-gray-500">No transactions recorded yet.</td>
                 </tr>
               ) : (
                 paginatedTxList.map((tx) => (
@@ -94,12 +93,14 @@ export default async function PlayerDetailPage({
                       {tx.date ? new Date(tx.date).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }) : "N/A"}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
-                        {tx.type || "Transaction"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {tx.description || "-"}
+                      <div className="flex flex-col items-start gap-1">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                          {tx.type || "Transaction"}
+                        </span>
+                        {tx.description && (
+                          <span className="text-xs text-gray-500">{tx.description}</span>
+                        )}
+                      </div>
                     </td>
                     <td className={`px-6 py-4 text-right font-semibold ${tx.amount > 0 ? "text-green-600" : tx.amount < 0 ? "text-red-600" : "text-gray-500"}`}>
                       {tx.amount > 0 ? "+" : tx.amount < 0 ? "-" : ""}£{Math.abs(Number(tx.amount)).toFixed(2)}

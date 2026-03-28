@@ -31,11 +31,6 @@ export default function RootLayout({
               </svg>
               Thursday Football
             </Link>
-            <nav className="flex gap-6">
-              <Link href="/" className="text-sm font-medium hover:text-blue-200 transition-colors">
-                Home
-              </Link>
-            </nav>
           </div>
         </header>
         

@@ -37,14 +37,14 @@ export default async function Home() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold text-gray-900">Player Balances</h1>
-        <div className="bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment Details</span>
-          <div className="text-sm text-gray-600">
-            <span className="font-medium text-gray-900">Daniel Shand</span> 
-            <span className="text-gray-300 mx-2">|</span> Account No: <span className="font-medium text-gray-900">77412193</span> 
-            <span className="text-gray-300 mx-2">|</span> Sort Code: <span className="font-medium text-gray-900">60-83-71</span>
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+        <h1 className="text-3xl font-bold text-gray-900 pt-1">Player Balances</h1>
+        <div className="bg-white px-5 py-4 rounded-xl shadow-sm border border-gray-100 flex flex-col min-w-[260px]">
+          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Payment Details</span>
+          <div className="text-sm text-gray-600 flex flex-col gap-2">
+            <div className="flex justify-between gap-4"><span>Name:</span> <span className="font-medium text-gray-900">Daniel Shand</span></div>
+            <div className="flex justify-between gap-4"><span>Account No:</span> <span className="font-medium text-gray-900">77412193</span></div>
+            <div className="flex justify-between gap-4"><span>Sort Code:</span> <span className="font-medium text-gray-900">60-83-71</span></div>
           </div>
         </div>
       </div>
@@ -56,12 +56,13 @@ export default async function Home() {
               <tr className="bg-gray-50 border-b border-gray-100">
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">Player Name</th>
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase tracking-wider text-right">Current Balance</th>
+                <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase tracking-wider"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {players.length === 0 ? (
                 <tr>
-                  <td colSpan={2} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={3} className="px-6 py-8 text-center text-gray-500">
                     No players found. Add some in the Admin dashboard!
                   </td>
                 </tr>
@@ -69,16 +70,20 @@ export default async function Home() {
                 players.map((player) => (
                   <tr key={player.id} className="hover:bg-blue-50 transition-colors group">
                     <td className="font-medium text-gray-900 p-0">
-                      <Link href={`/player/${player.id}`} className="px-6 py-4 flex items-center justify-between w-full h-full">
-                        <span>{player.name}</span>
-                        <span className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1 duration-200">
-                          &rarr;
-                        </span>
+                      <Link href={`/player/${player.id}`} className="px-6 py-4 block w-full h-full">
+                        {player.name}
                       </Link>
                     </td>
                     <td className={`text-right font-semibold p-0 ${player.balance > 0 ? "text-green-600" : player.balance < 0 ? "text-red-600" : "text-gray-500"}`}>
                       <Link href={`/player/${player.id}`} className="px-6 py-4 block w-full h-full">
                         {player.balance > 0 ? "+" : player.balance < 0 ? "-" : ""}£{Math.abs(player.balance).toFixed(2)}
+                      </Link>
+                    </td>
+                    <td className="p-0">
+                      <Link href={`/player/${player.id}`} className="px-6 py-4 flex items-center justify-end w-full h-full text-gray-400 group-hover:text-blue-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
                       </Link>
                     </td>
                   </tr>
