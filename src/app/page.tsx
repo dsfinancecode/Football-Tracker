@@ -37,8 +37,16 @@ export default async function Home() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Player Balances</h1>
+        <div className="bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment Details</span>
+          <div className="text-sm text-gray-600">
+            <span className="font-medium text-gray-900">Daniel Shand</span> 
+            <span className="text-gray-300 mx-2">|</span> Account No: <span className="font-medium text-gray-900">77412193</span> 
+            <span className="text-gray-300 mx-2">|</span> Sort Code: <span className="font-medium text-gray-900">60-83-71</span>
+          </div>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -70,7 +78,7 @@ export default async function Home() {
                     </td>
                     <td className={`text-right font-semibold p-0 ${player.balance > 0 ? "text-green-600" : player.balance < 0 ? "text-red-600" : "text-gray-500"}`}>
                       <Link href={`/player/${player.id}`} className="px-6 py-4 block w-full h-full">
-                        {player.balance > 0 ? "+" : ""}{player.balance.toFixed(2)}
+                        {player.balance > 0 ? "+" : player.balance < 0 ? "-" : ""}£{Math.abs(player.balance).toFixed(2)}
                       </Link>
                     </td>
                   </tr>
