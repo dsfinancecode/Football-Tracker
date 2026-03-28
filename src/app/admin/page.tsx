@@ -107,7 +107,7 @@ export default function AdminPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Admin</h1>
         <Link href="/kitty" className="px-5 py-2 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm">
-          Kitty
+          Kitty Balance
         </Link>
       </div>
 
@@ -130,7 +130,7 @@ export default function AdminPage() {
             <button type="submit" className="flex-1 sm:flex-none px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
               Add Player
             </button>
-            <Link href="/admin/players" className="flex-1 sm:flex-none px-6 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm flex items-center justify-center">
+            <Link href="/admin/players" className="flex-1 sm:flex-none px-6 py-2 bg-white border border-gray-900 text-gray-900 font-medium rounded-lg hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center">
               Manage
             </Link>
           </div>
@@ -188,7 +188,7 @@ export default function AdminPage() {
               <button type="submit" className="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm">
                 Save Transaction
               </button>
-              <Link href="/admin/transactions" className="px-6 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm flex items-center justify-center">
+              <Link href="/admin/transactions" className="px-6 py-2 bg-white border border-gray-900 text-gray-900 font-medium rounded-lg hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center">
                 Manage
               </Link>
             </div>
