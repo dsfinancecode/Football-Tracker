@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Football Tracker",
-  description: "Track weekly football players and financial transactions",
+  description: "Track weekly football games",
 };
 
 export default function RootLayout({
