@@ -56,6 +56,15 @@ export default async function Home() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900 pt-1">Player Balances</h1>
         <p className="text-gray-500 mt-1">Click player to view transaction history</p>
+        <Link
+          href="/bank"
+          className="inline-flex items-center text-gray-500 hover:text-blue-600 transition-colors mt-2 font-medium"
+        >
+          Bank Details
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        </Link>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
