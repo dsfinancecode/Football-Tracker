@@ -9,14 +9,15 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.100.1",
+    "@vercel/analytics": "^2.0.1",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
     "@types/react": "19.2.14",
-    "@tailwindcss/postcss": "latest",
     "postcss": "latest",
     "tailwindcss": "latest",
     "typescript": "6.0.2"
