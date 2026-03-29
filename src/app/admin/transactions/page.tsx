@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
@@ -24,6 +24,11 @@ export default function ManageTransactionsPage() {
   const [editDescription, setEditDescription] = useState("");
   const [editDate, setEditDate] = useState("");
   const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Filters
+  const [filterDate, setFilterDate] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [filterPlayer, setFilterPlayer] = useState("");
 
   useEffect(() => {
     fetchTransactions();
@@ -92,9 +97,32 @@ export default function ManageTransactionsPage() {
     }
   };
 
+  // Extract unique lists for our dropdown menus
+  const uniqueTypes = Array.from(new Set(transactions.map(tx => tx.type).filter(Boolean)));
+  const uniquePlayers = Array.from(new Set(transactions.map(tx => tx.players?.name).filter(Boolean)));
+
+  // Apply active filters dynamically
+  const filteredTxList = useMemo(() => {
+    return transactions.filter(tx => {
+      const matchDate = filterDate ? tx.date === filterDate : true;
+      const matchType = filterType ? tx.type === filterType : true;
+      const matchPlayer = filterPlayer ? tx.players?.name === filterPlayer : true;
+      return matchDate && matchType && matchPlayer;
+    });
+  }, [transactions, filterDate, filterType, filterPlayer]);
+
+  // Automatically jump back to page 1 if the user changes a filter
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterDate, filterType, filterPlayer]);
+
+  // Calculate dynamic KPIs based on the filtered list
+  const totalBalance = filteredTxList.reduce((sum, tx) => sum + Number(tx.amount), 0);
+  const txCount = filteredTxList.length;
+
   // Pagination logic
-  const totalPages = Math.ceil(transactions.length / ITEMS_PER_PAGE);
-  const paginatedTxList = transactions.slice(
+  const totalPages = Math.ceil(filteredTxList.length / ITEMS_PER_PAGE);
+  const paginatedTxList = filteredTxList.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -123,6 +151,45 @@ export default function ManageTransactionsPage() {
               Back to Admin
             </Link>
           </div>
+        </div>
+        <div className="flex gap-4">
+          <div className="bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col items-end justify-center">
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Count</span>
+            <span className="text-xl font-bold text-gray-900">{txCount}</span>
+          </div>
+          <div className="bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col items-end justify-center">
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Balance</span>
+            <span className={`text-xl font-bold ${totalBalance > 0 ? "text-green-600" : totalBalance < 0 ? "text-red-600" : "text-gray-900"}`}>
+              {totalBalance > 0 ? "+" : totalBalance < 0 ? "-" : ""}£{Math.abs(totalBalance).toFixed(2)}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters Section */}
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Date</label>
+          <input type="date" value={filterDate} onChange={(e) => setFilterDate(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-gray-700" />
+        </div>
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Type</label>
+          <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white text-gray-700">
+            <option value="">All Types</option>
+            {uniqueTypes.map(type => <option key={type} value={type as string}>{type as string}</option>)}
+          </select>
+        </div>
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Player</label>
+          <select value={filterPlayer} onChange={(e) => setFilterPlayer(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white text-gray-700">
+            <option value="">All Players</option>
+            {uniquePlayers.map(player => <option key={player} value={player as string}>{player as string}</option>)}
+          </select>
+        </div>
+        <div className="flex items-end">
+          <button onClick={() => { setFilterDate(""); setFilterType(""); setFilterPlayer(""); }} className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors w-full md:w-auto">
+            Clear
+          </button>
         </div>
       </div>
 
