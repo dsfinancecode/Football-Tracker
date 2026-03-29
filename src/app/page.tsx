@@ -53,19 +53,9 @@ export default async function Home() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 pt-1">Player Balances</h1>
-          <p className="text-gray-500 mt-1">Click player name to view transaction history</p>
-        </div>
-        <div className="bg-white px-5 py-4 rounded-xl shadow-sm border border-gray-100 flex flex-col min-w-[260px]">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Payment Details</span>
-          <div className="text-sm text-gray-600 flex flex-col gap-2">
-            <div className="flex justify-between gap-4"><span>Name:</span> <span className="font-medium text-gray-900">Daniel Shand</span></div>
-            <div className="flex justify-between gap-4"><span>Account No:</span> <span className="font-medium text-gray-900">77412193</span></div>
-            <div className="flex justify-between gap-4"><span>Sort Code:</span> <span className="font-medium text-gray-900">60-83-71</span></div>
-          </div>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 pt-1">Player Balances</h1>
+        <p className="text-gray-500 mt-1">Click player name to view transaction history</p>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
