@@ -8,3 +8,6 @@
 # env files (Crucial for security!)
 .env
 .env*.local
+
+# TypeScript declarations
+next-env.d.ts
