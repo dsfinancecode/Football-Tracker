@@ -1,9 +1,17 @@
 # dependencies
 /node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
 
 # Next.js build output
 /.next
 /out
+
+# vercel
+.vercel
 
 # env files (Crucial for security!)
 .env
@@ -11,3 +19,13 @@
 
 # TypeScript declarations
 next-env.d.ts
+*.tsbuildinfo
+
+# misc
+.DS_Store
+*.pem
+*debug.log*
+*error.log*
+.eslintcache
+**.gitignore
+**ai.instructions
