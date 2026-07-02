@@ -70,7 +70,7 @@ export default function AdminPage() {
     let finalAmount = parseFloat(txAmount);
     if (txType === "Game Fee" || txType === "Pitch Booking" || txType === "Kitty Expense") {
       finalAmount = -Math.abs(finalAmount); // Save as negative deduction
-    } else {
+    } else if (txType !== "Misc") {
       finalAmount = Math.abs(finalAmount); // Save as positive payment
     }
 
@@ -157,14 +157,15 @@ export default function AdminPage() {
                 <option value="Cash Payment">Cash Payment</option>
                 <option value="Kitty Expense">Kitty Expense</option>
                 <option value="Pitch Booking">Pitch Booking</option>
+                <option value="Misc">Misc</option>
               </select>
             </div>
             <div>
               <label className={`block text-sm font-medium mb-1 ${txType === "Kitty Expense" || txType === "Pitch Booking" ? "text-gray-400" : "text-gray-700"}`}>
-                Player
+                Player {txType === "Misc" && <span className="text-gray-400 font-normal">(Optional)</span>}
               </label>
-              <select disabled={txType === "Kitty Expense" || txType === "Pitch Booking"} required={!(txType === "Kitty Expense" || txType === "Pitch Booking")} value={txPlayerId} onChange={(e) => setTxPlayerId(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors">
-                <option value="" disabled={!(txType === "Kitty Expense" || txType === "Pitch Booking")}>Select a player...</option>
+              <select disabled={txType === "Kitty Expense" || txType === "Pitch Booking"} required={!(txType === "Kitty Expense" || txType === "Pitch Booking" || txType === "Misc")} value={txPlayerId} onChange={(e) => setTxPlayerId(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors">
+                <option value="" disabled={!(txType === "Kitty Expense" || txType === "Pitch Booking" || txType === "Misc")}>Select a player...</option>
                 {players.map((player) => (<option key={player.id} value={player.id}>{player.name}</option>))}
               </select>
             </div>

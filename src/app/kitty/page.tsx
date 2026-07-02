@@ -21,6 +21,7 @@ const getTypeColor = (type: string | null) => {
     case "Cash Payment": return "bg-teal-100 text-teal-800 border-teal-200";
     case "Kitty Expense": return "bg-red-100 text-red-800 border-red-200";
     case "Pitch Booking": return "bg-purple-100 text-purple-800 border-purple-200";
+    case "Misc": return "bg-yellow-100 text-yellow-800 border-yellow-200";
     default: return "bg-gray-100 text-gray-800 border-gray-200";
   }
 };
