@@ -77,7 +77,6 @@ export default function KittyPage() {
 
   // Calculate dynamic KPIs based on the filtered list
   const totalBalance = filteredTxList.reduce((sum, tx) => sum + Number(tx.amount), 0);
-  const txCount = filteredTxList.length;
 
   // Paginate the transactions
   const totalPages = Math.ceil(filteredTxList.length / ITEMS_PER_PAGE);
@@ -91,20 +90,15 @@ export default function KittyPage() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Kitty</h1>
-          <p className="text-gray-500 mt-1">Pool of all collected payments and expenses</p>
+          <h1 className="text-3xl font-bold text-gray-900">Kitty Transactions</h1>
           <div className="mt-3">
-            <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors group">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors group">
               <span className="transform group-hover:-translate-x-1 transition-transform duration-200">&larr;</span>
-              Back to Admin
+              Back to Home
             </Link>
           </div>
         </div>
         <div className="flex gap-4">
-          <div className="bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col items-end justify-center">
-            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Count</span>
-            <span className="text-xl font-bold text-gray-900">{txCount}</span>
-          </div>
           <div className="bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col items-end justify-center">
             <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Balance</span>
             <span className={`text-xl font-bold ${totalBalance > 0 ? "text-green-600" : totalBalance < 0 ? "text-red-600" : "text-gray-900"}`}>
