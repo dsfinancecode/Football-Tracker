@@ -4,6 +4,22 @@ import Link from "next/link";
 // Force Next.js to fetch fresh data every time the page loads
 export const dynamic = "force-dynamic";
 
+interface PlayerTransaction {
+  amount: number;
+}
+
+interface PlayerData {
+  id: string;
+  name: string;
+  transactions: PlayerTransaction[] | null;
+}
+
+interface PlayerBalance {
+  id: string;
+  name: string;
+  balance: number;
+}
+
 export default async function Home() {
   // Fetch players and their associated transactions in a single query
   const { data: playersData, error } = await supabase
@@ -22,8 +38,8 @@ export default async function Home() {
   }
 
   // Calculate the total balance for each player
-  const players = playersData?.map((player) => {
-    const totalBalance = player.transactions.reduce(
+  const players: PlayerBalance[] = (playersData as PlayerData[] | null)?.map((player) => {
+    const totalBalance = (player.transactions || []).reduce(
       (sum, tx) => sum + Number(tx.amount),
       0
     );
@@ -57,19 +73,15 @@ export default async function Home() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 pt-1">Player Balances</h1>
           <p className="text-gray-500 mt-1">Click player to view transaction history</p>
-          <Link
-            href="/bank"
-            className="inline-flex items-center text-gray-500 hover:text-blue-600 transition-colors mt-2 font-medium"
-          >
+        </div>
+        <div className="flex gap-3 shrink-0 mt-1">
+          <Link href="/bank" className="px-5 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm">
             Bank Details
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
+          </Link>
+          <Link href="/kitty" className="px-5 py-2 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm">
+            Kitty Balance
           </Link>
         </div>
-        <Link href="/kitty" className="px-5 py-2 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm mt-1 shrink-0">
-          Kitty Balance
-        </Link>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
