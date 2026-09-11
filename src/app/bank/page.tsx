@@ -19,7 +19,7 @@ export default function BankDetailsPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6">
         <div>
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Account Name</h2>
-          <p className="mt-1 text-xl font-medium text-gray-900">Daniel Barrel</p>
+          <p className="mt-1 text-xl font-medium text-gray-900">Dan Barrel</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
