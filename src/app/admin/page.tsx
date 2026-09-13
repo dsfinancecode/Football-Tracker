@@ -27,9 +27,16 @@ export default function AdminPage() {
   const [txDescription, setTxDescription] = useState("");
   const [txStatus, setTxStatus] = useState("");
 
+  // State for Bank Details
+  const [bankStatus, setBankStatus] = useState("");
+  const [bankAccountName, setBankAccountName] = useState("");
+  const [bankAccountNumber, setBankAccountNumber] = useState("");
+  const [bankSortCode, setBankSortCode] = useState("");
+
   // Fetch players from Supabase when the page loads
   useEffect(() => {
     fetchPlayers();
+    fetchSettings();
   }, []);
 
   const fetchPlayers = async () => {
@@ -40,6 +47,20 @@ export default function AdminPage() {
     
     if (data) setPlayers(data);
     if (error) console.error("Error fetching players:", error);
+  };
+
+  const fetchSettings = async () => {
+    const { data, error } = await supabase
+      .from("settings")
+      .select("value")
+      .eq("key", "bank_details")
+      .single();
+    
+    if (data?.value) {
+      setBankAccountName(data.value.accountName || "");
+      setBankAccountNumber(data.value.accountNumber || "");
+      setBankSortCode(data.value.sortCode || "");
+    }
   };
 
   // Handler to submit a new player
@@ -98,6 +119,27 @@ export default function AdminPage() {
       setTxDescription("");
       
       setTimeout(() => setTxStatus(""), 3000);
+    }
+  };
+
+  // Handler to update bank details
+  const handleUpdateBankDetails = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBankStatus("Saving...");
+    
+    const { error } = await supabase
+      .from("settings")
+      .upsert({ 
+        key: "bank_details", 
+        value: { accountName: bankAccountName, accountNumber: bankAccountNumber, sortCode: bankSortCode } 
+      });
+
+    if (error) {
+      setBankStatus("Error saving details.");
+      console.error(error);
+    } else {
+      setBankStatus("Bank details updated successfully!");
+      setTimeout(() => setBankStatus(""), 3000);
     }
   };
 
@@ -203,6 +245,33 @@ export default function AdminPage() {
                 Manage
               </Link>
             </div>
+          </div>
+        </form>
+      </section>
+
+      {/* Update Bank Details Section */}
+      <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">Bank Details</h2>
+        <form onSubmit={handleUpdateBankDetails} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Account Name</label>
+              <input type="text" required value={bankAccountName} onChange={(e) => setBankAccountName(e.target.value)} placeholder="e.g. John Doe" className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+              <input type="text" required value={bankAccountNumber} onChange={(e) => setBankAccountNumber(e.target.value)} placeholder="8 digit number" className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Sort Code</label>
+              <input type="text" required value={bankSortCode} onChange={(e) => setBankSortCode(e.target.value)} placeholder="xx-xx-xx" className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+          <div className="pt-2 flex items-center justify-between">
+            <p className="text-sm text-green-600 font-medium">{bankStatus}</p>
+            <button type="submit" className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+              Update Details
+            </button>
           </div>
         </form>
       </section>
