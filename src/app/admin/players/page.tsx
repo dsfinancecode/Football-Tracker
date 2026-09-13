@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { createBrowserClient } from "@supabase/ssr";
 
 interface Player {
   id: string;
@@ -10,6 +10,14 @@ interface Player {
 }
 
 export default function ManagePlayersPage() {
+  // Memoize the client so it doesn't lose the auth session on every keystroke/re-render
+  const [supabase] = useState(() =>
+    createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+  );
+
   const [players, setPlayers] = useState<Player[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
@@ -38,13 +46,14 @@ export default function ManagePlayersPage() {
   const handleSave = async (id: string) => {
     if (!editName.trim()) return;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("players")
       .update({ name: editName.trim() })
-      .eq("id", id);
+      .eq("id", id)
+      .select(); // Ask Supabase to return the updated row
 
-    if (error) {
-      setStatusMessage({ type: "error", text: "Failed to update player name." });
+    if (error || !data || data.length === 0) {
+      setStatusMessage({ type: "error", text: "Failed to update player name. Check permissions." });
     } else {
       setStatusMessage({ type: "success", text: "Player updated successfully!" });
       setEditingId(null);
@@ -57,16 +66,17 @@ export default function ManagePlayersPage() {
     const confirmDelete = window.confirm(`Are you sure you want to delete ${name}?`);
     if (!confirmDelete) return;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("players")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .select(); // Ask Supabase to return the deleted row
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       // Usually fails if the player has existing transactions due to foreign key constraints
       setStatusMessage({ 
         type: "error", 
-        text: "Cannot delete this player. They have existing transactions." 
+        text: "Cannot delete this player. Existing transactions or unauthorized." 
       });
     } else {
       setStatusMessage({ type: "success", text: "Player deleted successfully!" });

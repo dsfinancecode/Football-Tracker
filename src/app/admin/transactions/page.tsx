@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/lib/supabase";
+import { createBrowserClient } from "@supabase/ssr";
 import Link from "next/link";
 
 interface Transaction {
@@ -15,6 +15,11 @@ interface Transaction {
 }
 
 export default function ManageTransactionsPage() {
+  const [supabase] = useState(() => createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  ));
+
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
@@ -60,16 +65,17 @@ export default function ManageTransactionsPage() {
   };
 
   const handleSave = async (id: string) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("transactions")
       .update({ 
         amount: parseFloat(editAmount),
         description: editDescription,
         date: editDate
       })
-      .eq("id", id);
+      .eq("id", id)
+      .select();
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       setStatusMessage({ type: "error", text: "Failed to update transaction." });
     } else {
       setStatusMessage({ type: "success", text: "Transaction updated successfully!" });
@@ -83,12 +89,13 @@ export default function ManageTransactionsPage() {
     const confirmDelete = window.confirm("Are you sure you want to delete this transaction?");
     if (!confirmDelete) return;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("transactions")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .select();
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       setStatusMessage({ type: "error", text: "Failed to delete transaction." });
     } else {
       setStatusMessage({ type: "success", text: "Transaction deleted successfully!" });

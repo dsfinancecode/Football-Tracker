@@ -12,11 +12,11 @@ interface Player {
 }
 
 export default function AdminPage() {
-  // Use the SSR browser client to automatically read the auth cookie set during login
-  const supabase = createBrowserClient(
+  // Memoize the SSR browser client so it doesn't lose the auth session on re-renders
+  const [supabase] = useState(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  ));
 
   // State for fetching players (used in the transaction dropdown)
   const [players, setPlayers] = useState<Player[]>([]);
