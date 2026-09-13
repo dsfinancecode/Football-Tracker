@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { logout } from "@/actions";
+import { createBrowserClient } from "@supabase/ssr";
 
 // Define TypeScript interfaces for our data
 interface Player {
@@ -12,6 +12,12 @@ interface Player {
 }
 
 export default function AdminPage() {
+  // Use the SSR browser client to automatically read the auth cookie set during login
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
   // State for fetching players (used in the transaction dropdown)
   const [players, setPlayers] = useState<Player[]>([]);
   
