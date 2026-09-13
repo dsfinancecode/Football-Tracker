@@ -1,3 +1,5 @@
+// PAGE: Manage Players (/admin/players)
+
 "use client";
 
 import { useState, useEffect } from "react";

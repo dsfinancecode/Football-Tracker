@@ -1,3 +1,5 @@
+// PAGE: Public Bank Details (/bank)
+
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
@@ -18,17 +20,16 @@ export default async function BankDetailsPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 pt-1">Bank Details</h1>
-        <Link 
-          href="/" 
-          className="inline-flex items-center text-gray-500 hover:text-blue-600 transition-colors mt-2 font-medium"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-          </svg>
-          Back to Home
-        </Link>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 pt-1">Bank Details</h1>
+          <div className="mt-3">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors group">
+              <span className="transform group-hover:-translate-x-1 transition-transform duration-200">&larr;</span>
+              Back to Home
+            </Link>
+          </div>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6">

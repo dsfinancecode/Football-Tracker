@@ -1,3 +1,5 @@
+// PAGE: Admin Login (/admin/login)
+
 import { login } from "@/actions";
 
 export default async function AdminLoginPage({

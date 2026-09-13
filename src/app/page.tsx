@@ -1,3 +1,5 @@
+// PAGE: Main Public Home Page - Player Balances (/)
+
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 

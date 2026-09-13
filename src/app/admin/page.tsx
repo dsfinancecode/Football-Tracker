@@ -1,3 +1,5 @@
+// PAGE: Main Admin Dashboard (/admin)
+
 "use client";
 
 import { useState, useEffect } from "react";

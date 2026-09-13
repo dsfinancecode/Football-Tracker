@@ -1,3 +1,5 @@
+// PAGE: Manage Transactions (/admin/transactions)
+
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
