@@ -29,6 +29,7 @@ export default function AdminPage() {
 
   // State for Add Transaction form
   const [txPlayerId, setTxPlayerId] = useState("");
+  const [txToPlayerId, setTxToPlayerId] = useState("");
   const [txAmount, setTxAmount] = useState("4");
   const [txDate, setTxDate] = useState(new Date().toISOString().split("T")[0]); // Default to today: YYYY-MM-DD
   const [txType, setTxType] = useState("Game Fee");
@@ -96,24 +97,42 @@ export default function AdminPage() {
     e.preventDefault();
     setTxStatus("Adding...");
 
-    // Automatically handle positive/negative amounts based on type
-    let finalAmount = parseFloat(txAmount);
-    if (txType === "Game Fee" || txType === "Pitch Booking" || txType === "Kitty Expense") {
-      finalAmount = -Math.abs(finalAmount); // Save as negative deduction
-    } else if (txType !== "Misc") {
-      finalAmount = Math.abs(finalAmount); // Save as positive payment
+    const finalAmountParsed = parseFloat(txAmount);
+    let insertData = [];
+
+    if (txType === "Transfer") {
+      if (!txPlayerId || !txToPlayerId) {
+        setTxStatus("Please select both a sender and a receiver.");
+        return;
+      }
+      if (txPlayerId === txToPlayerId) {
+        setTxStatus("Sender and receiver must be different.");
+        return;
+      }
+      
+      const transferAmount = Math.abs(finalAmountParsed);
+      const senderName = players.find(p => p.id === txPlayerId)?.name || "Unknown";
+      const receiverName = players.find(p => p.id === txToPlayerId)?.name || "Unknown";
+      
+      insertData = [
+        { player_id: txPlayerId, amount: -transferAmount, date: txDate, type: txType, description: txDescription || `Transfer to ${receiverName}` },
+        { player_id: txToPlayerId, amount: transferAmount, date: txDate, type: txType, description: txDescription || `Transfer from ${senderName}` }
+      ];
+    } else {
+      // Automatically handle positive/negative amounts based on type
+      let finalAmount = finalAmountParsed;
+      if (txType === "Game Fee" || txType === "Pitch Booking" || txType === "Kitty Expense") {
+        finalAmount = -Math.abs(finalAmount); // Save as negative deduction
+      } else if (txType !== "Misc") {
+        finalAmount = Math.abs(finalAmount); // Save as positive payment
+      }
+
+      insertData = [{
+        player_id: txPlayerId || null, amount: finalAmount, date: txDate, type: txType, description: txDescription
+      }];
     }
 
-    const { error } = await supabase
-      .from("transactions")
-      .insert([{
-        // Supabase requires null instead of an empty string if no player is selected
-        player_id: txPlayerId || null, 
-        amount: finalAmount,
-        date: txDate,
-        type: txType,
-        description: txDescription
-      }]);
+    const { error } = await supabase.from("transactions").insert(insertData);
 
     if (error) {
       setTxStatus("Error adding transaction.");
@@ -125,6 +144,7 @@ export default function AdminPage() {
       else if (txType.endsWith("Payment")) setTxAmount("4");
       else setTxAmount(""); // Reset amount for expenses, but keep date and type!
       setTxDescription("");
+      setTxToPlayerId("");
       
       setTimeout(() => setTxStatus(""), 3000);
     }
@@ -217,18 +237,41 @@ export default function AdminPage() {
                 <option value="Cash Payment">Cash Payment</option>
                 <option value="Kitty Expense">Kitty Expense</option>
                 <option value="Pitch Booking">Pitch Booking</option>
+                <option value="Transfer">Transfer</option>
                 <option value="Misc">Misc</option>
               </select>
             </div>
-            <div>
-              <label className={`block text-sm font-medium mb-1 ${txType === "Kitty Expense" || txType === "Pitch Booking" ? "text-gray-400" : "text-gray-700"}`}>
-                Player {txType === "Misc" && <span className="text-gray-400 font-normal">(Optional)</span>}
-              </label>
-              <select disabled={txType === "Kitty Expense" || txType === "Pitch Booking"} required={!(txType === "Kitty Expense" || txType === "Pitch Booking" || txType === "Misc")} value={txPlayerId} onChange={(e) => setTxPlayerId(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors">
-                <option value="" disabled={!(txType === "Kitty Expense" || txType === "Pitch Booking" || txType === "Misc")}>Select a player...</option>
-                {players.map((player) => (<option key={player.id} value={player.id}>{player.name}</option>))}
-              </select>
-            </div>
+            
+            {txType === "Transfer" ? (
+              <>
+                <div className="hidden md:block"></div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">From Player</label>
+                  <select required value={txPlayerId} onChange={(e) => setTxPlayerId(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white transition-colors">
+                    <option value="" disabled>Select sender...</option>
+                    {players.map((player) => (<option key={player.id} value={player.id}>{player.name}</option>))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">To Player</label>
+                  <select required value={txToPlayerId} onChange={(e) => setTxToPlayerId(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white transition-colors">
+                    <option value="" disabled>Select receiver...</option>
+                    {players.map((player) => (<option key={player.id} value={player.id}>{player.name}</option>))}
+                  </select>
+                </div>
+              </>
+            ) : (
+              <div>
+                <label className={`block text-sm font-medium mb-1 ${txType === "Kitty Expense" || txType === "Pitch Booking" ? "text-gray-400" : "text-gray-700"}`}>
+                  Player {txType === "Misc" && <span className="text-gray-400 font-normal">(Optional)</span>}
+                </label>
+                <select disabled={txType === "Kitty Expense" || txType === "Pitch Booking"} required={!(txType === "Kitty Expense" || txType === "Pitch Booking" || txType === "Misc")} value={txPlayerId} onChange={(e) => setTxPlayerId(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors">
+                  <option value="" disabled={!(txType === "Kitty Expense" || txType === "Pitch Booking" || txType === "Misc")}>Select a player...</option>
+                  {players.map((player) => (<option key={player.id} value={player.id}>{player.name}</option>))}
+                </select>
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
               <input type="number" step="0.01" required value={txAmount} onChange={(e) => setTxAmount(e.target.value)} placeholder="e.g., 5.00 or 10.00" className={`w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold ${txType === "Game Fee" || txType === "Pitch Booking" || txType === "Kitty Expense" ? "text-red-600" : "text-green-600"}`} />
