@@ -42,6 +42,9 @@ export default function AdminPage() {
   const [bankAccountNumber, setBankAccountNumber] = useState("");
   const [bankSortCode, setBankSortCode] = useState("");
 
+  // State for App Settings
+  const [showKitty, setShowKitty] = useState(true);
+
   // Fetch players from Supabase when the page loads
   useEffect(() => {
     fetchPlayers();
@@ -61,14 +64,21 @@ export default function AdminPage() {
   const fetchSettings = async () => {
     const { data, error } = await supabase
       .from("settings")
-      .select("value")
-      .eq("key", "bank_details")
-      .single();
+      .select("key, value")
+      .in("key", ["bank_details", "kitty_settings"]);
     
-    if (data?.value) {
-      setBankAccountName(data.value.accountName || "");
-      setBankAccountNumber(data.value.accountNumber || "");
-      setBankSortCode(data.value.sortCode || "");
+    if (data) {
+      const bankDetails = data.find((row) => row.key === "bank_details")?.value;
+      if (bankDetails) {
+        setBankAccountName(bankDetails.accountName || "");
+        setBankAccountNumber(bankDetails.accountNumber || "");
+        setBankSortCode(bankDetails.sortCode || "");
+      }
+
+      const kittySettings = data.find((row) => row.key === "kitty_settings")?.value;
+      if (kittySettings && typeof kittySettings.show !== 'undefined') {
+        setShowKitty(kittySettings.show);
+      }
     }
   };
 
@@ -169,6 +179,19 @@ export default function AdminPage() {
       setBankStatus("Bank details updated successfully!");
       setTimeout(() => setBankStatus(""), 3000);
     }
+  };
+
+  // Handler to toggle kitty balance visibility
+  const handleToggleKitty = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.checked;
+    setShowKitty(newValue);
+    
+    await supabase
+      .from("settings")
+      .upsert({ 
+        key: "kitty_settings", 
+        value: { show: newValue } 
+      });
   };
 
   return (
@@ -325,6 +348,20 @@ export default function AdminPage() {
             </button>
           </div>
         </form>
+      </section>
+
+      {/* App Settings Section */}
+      <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">App Settings</h2>
+        <label className="flex items-center gap-3 cursor-pointer select-none">
+          <input 
+            type="checkbox" 
+            checked={showKitty} 
+            onChange={handleToggleKitty}
+            className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 transition-colors cursor-pointer"
+          />
+          <span className="text-gray-700 font-medium">Show Kitty Balance button on public page</span>
+        </label>
       </section>
     </div>
   );

@@ -39,6 +39,15 @@ export default async function Home() {
     console.error("Error fetching players:", error);
   }
 
+  // Fetch kitty button visibility setting
+  const { data: kittySettingsData, error: kittyError } = await supabase
+    .from("settings")
+    .select("value")
+    .eq("key", "kitty_settings")
+    .maybeSingle();
+
+  const showKitty = kittySettingsData?.value?.show ?? true; // Default to true if not yet set in DB
+
   // Calculate the total balance for each player
   const players: PlayerBalance[] = (playersData as PlayerData[] | null)?.map((player) => {
     const totalBalance = (player.transactions || []).reduce(
@@ -80,9 +89,11 @@ export default async function Home() {
           <Link href="/bank" className="px-5 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm">
             Bank Details
           </Link>
-          <Link href="/kitty" className="px-5 py-2 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm">
-            Kitty Balance
-          </Link>
+          {showKitty && (
+            <Link href="/kitty" className="px-5 py-2 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm">
+              Kitty Balance
+            </Link>
+          )}
           <Link href="/admin" title="Admin Dashboard" className="px-3 py-2 bg-white border border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors shadow-sm flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
               <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clipRule="evenodd" />
